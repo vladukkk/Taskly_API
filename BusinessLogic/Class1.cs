@@ -1,4 +1,6 @@
-﻿namespace BusinessLogic
+﻿
+
+namespace BusinessLogic
 {
     public class Class1
     {
