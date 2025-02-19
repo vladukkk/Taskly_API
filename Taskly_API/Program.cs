@@ -1,3 +1,4 @@
+using BusinessLogic.Helpers;
 
 namespace Taskly_API
 {
@@ -7,7 +8,14 @@ namespace Taskly_API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            //add AutoMapper
+            builder.Services.AddAutoMapper(typeof(MapperProfile));
+
+            //config context
+            /*builder.Services.AddDbContext<TaskDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("testConn"));
+            });*/
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
