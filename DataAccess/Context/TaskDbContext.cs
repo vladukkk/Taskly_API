@@ -1,10 +1,11 @@
-﻿using DataAccess.EntityModels;
+﻿using DataAccess.Configurations;
+using DataAccess.EntityModels;
 using DataAccess.EntityModels.ManyToMany;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Context
 {
-    internal class TaskDbContext : DbContext
+    public class TaskDbContext : DbContext
     {
         public DbSet<TaskListEntity> TaskLists { get; set; }
         public DbSet<TaskEntity> Tasks { get; set; }
@@ -16,6 +17,12 @@ namespace DataAccess.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new TaskListConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskConfiguration());
+            modelBuilder.ApplyConfiguration(new TagConfiguration());
+            modelBuilder.ApplyConfiguration(new PriorityConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskTagsConfiguration());
+
             base.OnModelCreating(modelBuilder);
         }
 

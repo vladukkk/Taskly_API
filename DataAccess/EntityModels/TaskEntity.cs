@@ -14,10 +14,10 @@ namespace DataAccess.EntityModels
         public string? Description { get; set; }
 
         public bool IsCompleted { get; set; }
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime UpdateAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public Guid PriorityId { get; set; }
         public PriorityEntity Priority { get; set; } = null!;

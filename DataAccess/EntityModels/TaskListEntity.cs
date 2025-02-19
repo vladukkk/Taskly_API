@@ -14,7 +14,7 @@ namespace DataAccess.EntityModels
         public string Title { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime UpdateAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public List<TaskEntity>? Tasks { get; set; }
 
