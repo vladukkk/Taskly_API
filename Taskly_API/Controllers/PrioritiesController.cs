@@ -22,6 +22,13 @@ namespace WebAPI.Controllers
             return Ok(request);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPriority(Guid id)
+        {
+            var priority = await _service.GetById(id);
+            return Ok(priority);
+        }
+
         [HttpPost("add")]
         public async Task<IActionResult> AddPriority([FromBody] PriorityAddDTO priority)
         {

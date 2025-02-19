@@ -18,10 +18,16 @@ namespace BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task<List<TagDTO>> GetTags()
+        public async Task<List<TagDTO>?> GetTags()
         {
             var result = await _tagRepository.Get();
             return _mapper.Map<List<TagDTO>>(result);
+        }
+
+        public async Task<TagDTO?> GetById(Guid id)
+        {
+            var tag = await _tagRepository.GetById(id);
+            return _mapper.Map<TagDTO>(tag);
         }
 
         public async Task AddTag(TagAddDTO tag)
@@ -42,5 +48,6 @@ namespace BusinessLogic.Services
         {
             await _tagRepository.Delete(Id);
         }
+
     }
 }

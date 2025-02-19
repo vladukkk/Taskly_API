@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Tag;
+using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -20,6 +21,13 @@ namespace WebAPI.Controllers
         {
             var request = await _tagService.GetTags();
             return Ok(request);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPriority(Guid id)
+        {
+            var tag = await _tagService.GetById(id);
+            return Ok(tag);
         }
 
         [HttpPost("add")]

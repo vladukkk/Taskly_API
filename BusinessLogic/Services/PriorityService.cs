@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Priority;
 using DataAccess.Contracts;
@@ -19,10 +18,16 @@ namespace BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task<List<PriorityDTO>> GetPriorities()
+        public async Task<List<PriorityDTO>?> GetPriorities()
         {
             var result = await _priorityRepository.Get();
             return _mapper.Map<List<PriorityDTO>>(result);
+        }
+
+        public async Task<PriorityDTO?> GetById(Guid id)
+        {
+            var priority = await _priorityRepository.GetById(id);
+            return _mapper.Map<PriorityDTO>(priority);
         }
 
         public async Task AddPriority(PriorityAddDTO priority)
@@ -43,5 +48,6 @@ namespace BusinessLogic.Services
         {
             await _priorityRepository.Delete(Id);
         }
+
     }
 }
