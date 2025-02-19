@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace DataAccess.Repository
 {
-    internal class Repository<TEntity> : IDisposable, IRepository<TEntity> where TEntity : class, IEntity
+    public class Repository<TEntity> : IDisposable, IRepository<TEntity> where TEntity : class, IEntity
     {
         private readonly TaskDbContext _context;
         private readonly DbSet<TEntity> _dbSet;
