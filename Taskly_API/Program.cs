@@ -1,4 +1,7 @@
 using BusinessLogic.Helpers;
+using DataAccess.Context;
+using DataAccess.Seed;
+using Microsoft.EntityFrameworkCore;
 
 namespace Taskly_API
 {
@@ -12,10 +15,10 @@ namespace Taskly_API
             builder.Services.AddAutoMapper(typeof(MapperProfile));
 
             //config context
-            /*builder.Services.AddDbContext<TaskDbContext>(options =>
+            builder.Services.AddDbContext<TaskDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("testConn"));
-            });*/
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,6 +32,13 @@ namespace Taskly_API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
+                context.Database.Migrate();  // Застосовує міграції
+                DbInitializer.Seed(context); // Заповнює базу
             }
 
             app.UseHttpsRedirection();
