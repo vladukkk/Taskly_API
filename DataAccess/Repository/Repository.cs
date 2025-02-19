@@ -17,20 +17,20 @@ namespace DataAccess.Repository
         }
 
         public async Task<IEnumerable<TEntity>?> Get(
-            Expression<Func<TEntity, bool>>? filter = null
-            ,Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null
-            , params Expression<Func<TEntity, object>>[] includeProperties)
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = _dbSet;
 
             if (filter != null)
                 query = query.Where(filter);
 
-            if (orderBy != null)
-                query = orderBy(query);
-
             foreach (var property in includeProperties)
                 query = query.Include(property);
+
+            if (orderBy != null)
+                query = orderBy(query);
 
             return await query.ToListAsync();
         }
@@ -39,8 +39,8 @@ namespace DataAccess.Repository
         {
             IQueryable<TEntity> query = _dbSet;
 
-            foreach (var prop in includeProperties)
-                query = query = query.Include(prop);
+            foreach (var property in includeProperties)
+                query = query.Include(property);
 
             return await query.FirstOrDefaultAsync(e => e.Id == Id);
         }
@@ -50,21 +50,26 @@ namespace DataAccess.Repository
             await _dbSet.AddAsync(entity);
         }
 
-        public void Attach(TEntity entity)
+        public Task Attach(TEntity entity)
         {
             _dbSet.Attach(entity);
+            return Task.CompletedTask;
         }
 
         public async Task Delete(Guid Id)
         {
             var entity = await _dbSet.FindAsync(Id);
             if (entity != null)
+            {
                 _dbSet.Remove(entity);
+                await SaveAsync();
+            }
         }
 
-        public void Update(TEntity entity)
+        public Task Update(TEntity entity)
         {
             _dbSet.Update(entity);
+            return Task.CompletedTask;
         }
 
         public async Task SaveAsync()
