@@ -1,9 +1,9 @@
 ﻿using BusinessLogic.Contracts;
 
-namespace BusinessLogic.DTOs.Priority
+namespace BusinessLogic.DTOs.Tag
 {
-    public class PriorityDTO : IPriority
-    { 
+    public class TagUpdateDTO: ITag
+    {
         public Guid Id { get; set; }
         public string Title { get; set; } = null!;
         public string ColorHash { get; set; } = null!;

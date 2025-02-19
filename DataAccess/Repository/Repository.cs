@@ -35,7 +35,8 @@ namespace DataAccess.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<TEntity?> GetById(Guid Id, params Expression<Func<TEntity, object>>[] includeProperties)
+        public async Task<TEntity?> GetById(Guid Id
+            , params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = _dbSet;
 

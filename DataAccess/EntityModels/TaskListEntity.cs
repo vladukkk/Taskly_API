@@ -1,6 +1,4 @@
 ﻿using DataAccess.Contracts;
-using System.Diagnostics;
-using System.Reflection.Metadata;
 
 namespace DataAccess.EntityModels
 {

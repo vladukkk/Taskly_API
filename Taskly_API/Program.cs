@@ -1,7 +1,13 @@
+using BusinessLogic.Contracts;
 using BusinessLogic.Helpers;
+using BusinessLogic.Services;
+using BusinessLogic.Validators.Priority;
 using DataAccess.Context;
-using DataAccess.Seed;
+using DataAccess.Contracts;
+using DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace Taskly_API
 {
@@ -20,6 +26,16 @@ namespace Taskly_API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("testConn"));
             });
 
+            //repository
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services
+            builder.Services.AddScoped<IPriorityService, PriorityService>();
+            builder.Services.AddScoped<ITagService, TagService>();
+
+            //validators
+            builder.Services.AddFluentValidationAutoValidation()
+                            .AddValidatorsFromAssemblyContaining<PriorityAddValidator>();
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -34,12 +50,12 @@ namespace Taskly_API
                 app.UseSwaggerUI();
             }
 
-            using (var scope = app.Services.CreateScope())
+            /*using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
                 context.Database.Migrate();  // Застосовує міграції
                 DbInitializer.Seed(context); // Заповнює базу
-            }
+            }*/
 
             app.UseHttpsRedirection();
 

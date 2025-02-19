@@ -9,7 +9,8 @@ namespace DataAccess.Contracts
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params Expression<Func<TEntity, object>>[] includeProperties);
 
-        Task<TEntity?> GetById(Guid Id, params Expression<Func<TEntity, object>>[] includeProperties);
+        Task<TEntity?> GetById(Guid Id
+            , params Expression<Func<TEntity, object>>[] includeProperties);
 
         Task Add(TEntity entity);
         Task Attach(TEntity entity);
