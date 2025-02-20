@@ -4,6 +4,7 @@ using DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    partial class TaskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250220121925_Init2")]
+    partial class Init2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,6 +89,9 @@ namespace DataAccess.Migrations
                     b.Property<Guid>("PriorityId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("TaskListId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -98,7 +104,31 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("PriorityId");
 
+                    b.HasIndex("TaskListId");
+
                     b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("DataAccess.EntityModels.TaskListEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaskLists");
                 });
 
             modelBuilder.Entity("TagEntityTaskEntity", b =>
@@ -124,7 +154,15 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DataAccess.EntityModels.TaskListEntity", "TaskList")
+                        .WithMany("Tasks")
+                        .HasForeignKey("TaskListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Priority");
+
+                    b.Navigation("TaskList");
                 });
 
             modelBuilder.Entity("TagEntityTaskEntity", b =>
@@ -143,6 +181,11 @@ namespace DataAccess.Migrations
                 });
 
             modelBuilder.Entity("DataAccess.EntityModels.PriorityEntity", b =>
+                {
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("DataAccess.EntityModels.TaskListEntity", b =>
                 {
                     b.Navigation("Tasks");
                 });

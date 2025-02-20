@@ -32,8 +32,8 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddPriority([FromBody] PriorityAddDTO priority)
         {
-            if (priority == null)
-                return BadRequest("can't be null");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             await _service.AddPriority(priority);
             return Ok();
@@ -42,8 +42,8 @@ namespace WebAPI.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> UpdatePriority([FromBody] PriorityUpdateDTO priority)
         {
-            if (priority == null)
-                return BadRequest("can't be null");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             await _service.UpdatePriority(priority);
             return Ok();

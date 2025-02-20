@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Init2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,21 +86,21 @@ namespace DataAccess.Migrations
                 name: "TaskTags",
                 columns: table => new
                 {
-                    TaskId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    TagsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TasksId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TaskTags", x => new { x.TaskId, x.TagId });
+                    table.PrimaryKey("PK_TaskTags", x => new { x.TagsId, x.TasksId });
                     table.ForeignKey(
-                        name: "FK_TaskTags_Tags_TagId",
-                        column: x => x.TagId,
+                        name: "FK_TaskTags_Tags_TagsId",
+                        column: x => x.TagsId,
                         principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TaskTags_Tasks_TaskId",
-                        column: x => x.TaskId,
+                        name: "FK_TaskTags_Tasks_TasksId",
+                        column: x => x.TasksId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -117,9 +117,9 @@ namespace DataAccess.Migrations
                 column: "TaskListId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskTags_TagId",
+                name: "IX_TaskTags_TasksId",
                 table: "TaskTags",
-                column: "TagId");
+                column: "TasksId");
         }
 
         /// <inheritdoc />

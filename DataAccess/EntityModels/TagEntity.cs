@@ -1,5 +1,4 @@
 ﻿using DataAccess.Contracts;
-using DataAccess.EntityModels.ManyToMany;
 
 namespace DataAccess.EntityModels
 {
@@ -10,7 +9,6 @@ namespace DataAccess.EntityModels
         public string Title { get; set; } = null!;
         public string ColorHash { get; set; } = null!;
 
-        public List<TaskTagEntity>? TaskTags { get; set; }
-
+        public List<TaskEntity>? Tasks { get; set; }
     }
 }

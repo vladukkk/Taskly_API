@@ -1,6 +1,5 @@
 ﻿using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Tag;
-using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers

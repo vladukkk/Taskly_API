@@ -8,6 +8,7 @@ using DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using DataAccess.Seed;
 
 namespace Taskly_API
 {
@@ -29,6 +30,7 @@ namespace Taskly_API
             //repository
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             //services
+            builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IPriorityService, PriorityService>();
             builder.Services.AddScoped<ITagService, TagService>();
 
@@ -50,12 +52,12 @@ namespace Taskly_API
                 app.UseSwaggerUI();
             }
 
-            /*using (var scope = app.Services.CreateScope())
+            using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
                 context.Database.Migrate();  // Застосовує міграції
                 DbInitializer.Seed(context); // Заповнює базу
-            }*/
+            }
 
             app.UseHttpsRedirection();
 

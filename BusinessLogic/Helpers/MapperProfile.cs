@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.Priority;
 using BusinessLogic.DTOs.Tag;
+using BusinessLogic.DTOs.Task;
 using DataAccess.EntityModels;
 
 namespace BusinessLogic.Helpers
@@ -9,6 +10,10 @@ namespace BusinessLogic.Helpers
     {
         public MapperProfile()
         {
+            CreateMap<TaskEntity, TaskDTO>().ReverseMap();
+            CreateMap<TaskEntity, TaskAddDTO>().ReverseMap();
+            CreateMap<TaskEntity, TaskUpdateDTO>().ReverseMap();
+
             CreateMap<PriorityEntity, PriorityDTO>().ReverseMap();
             CreateMap<PriorityEntity, PriorityAddDTO>().ReverseMap();
             CreateMap<PriorityEntity, PriorityUpdateDTO>().ReverseMap();

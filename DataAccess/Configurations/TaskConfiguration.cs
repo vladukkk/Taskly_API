@@ -29,18 +29,14 @@ namespace DataAccess.Configurations
             builder.Property(t => t.UpdatedAt)
                 .IsRequired();
 
-            builder.HasOne(t => t.TaskList)
-                .WithMany(tl => tl.Tasks)
-                .HasForeignKey(t => t.TaskListId);
-
             builder.HasOne(t => t.Priority)
                 .WithMany(p => p.Tasks)
                 .HasForeignKey(t => t.PriorityId);
 
-            builder.HasMany(t => t.TaskTags)
-                .WithOne(tt => tt.Task)
-                .HasForeignKey(tt => tt.TaskId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(t => t.Tags)
+                .WithMany(tag => tag.Tasks)
+                .UsingEntity(j => j
+                    .ToTable("TaskTags"));
         }
     }
 }

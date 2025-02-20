@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    [Migration("20250219192707_Init")]
-    partial class Init
+    [Migration("20250220135318_DeleteTaskLists")]
+    partial class DeleteTaskLists
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DataAccess.EntityModels.ManyToMany.TaskTagEntity", b =>
-                {
-                    b.Property<Guid>("TaskId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("TaskId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("TaskTags", (string)null);
-                });
 
             modelBuilder.Entity("DataAccess.EntityModels.PriorityEntity", b =>
                 {
@@ -104,9 +89,6 @@ namespace DataAccess.Migrations
                     b.Property<Guid>("PriorityId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TaskListId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -119,50 +101,22 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("PriorityId");
 
-                    b.HasIndex("TaskListId");
-
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("DataAccess.EntityModels.TaskListEntity", b =>
+            modelBuilder.Entity("TagEntityTaskEntity", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("TagsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("TasksId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.HasKey("TagsId", "TasksId");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.HasIndex("TasksId");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("TaskLists");
-                });
-
-            modelBuilder.Entity("DataAccess.EntityModels.ManyToMany.TaskTagEntity", b =>
-                {
-                    b.HasOne("DataAccess.EntityModels.TagEntity", "Tag")
-                        .WithMany("TaskTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.EntityModels.TaskEntity", "Task")
-                        .WithMany("TaskTags")
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tag");
-
-                    b.Navigation("Task");
+                    b.ToTable("TaskTags", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.EntityModels.TaskEntity", b =>
@@ -173,33 +127,25 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.EntityModels.TaskListEntity", "TaskList")
-                        .WithMany("Tasks")
-                        .HasForeignKey("TaskListId")
+                    b.Navigation("Priority");
+                });
+
+            modelBuilder.Entity("TagEntityTaskEntity", b =>
+                {
+                    b.HasOne("DataAccess.EntityModels.TagEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Priority");
-
-                    b.Navigation("TaskList");
+                    b.HasOne("DataAccess.EntityModels.TaskEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataAccess.EntityModels.PriorityEntity", b =>
-                {
-                    b.Navigation("Tasks");
-                });
-
-            modelBuilder.Entity("DataAccess.EntityModels.TagEntity", b =>
-                {
-                    b.Navigation("TaskTags");
-                });
-
-            modelBuilder.Entity("DataAccess.EntityModels.TaskEntity", b =>
-                {
-                    b.Navigation("TaskTags");
-                });
-
-            modelBuilder.Entity("DataAccess.EntityModels.TaskListEntity", b =>
                 {
                     b.Navigation("Tasks");
                 });

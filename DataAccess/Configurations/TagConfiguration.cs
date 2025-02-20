@@ -18,10 +18,10 @@ namespace DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(7);
 
-            builder.HasMany(t => t.TaskTags)
-                .WithOne(tt => tt.Tag)
-                .HasForeignKey(tt => tt.TagId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(t => t.Tasks)
+                .WithMany(task => task.Tags)
+                .UsingEntity(j => j
+                    .ToTable("TaskTags"));
         }
     }
 }

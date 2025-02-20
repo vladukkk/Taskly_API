@@ -1,14 +1,13 @@
 ﻿using DataAccess.Contracts;
-using DataAccess.EntityModels.ManyToMany;
 
 namespace DataAccess.EntityModels
 {
     public class TaskEntity : IEntity
     {
         public Guid Id { get; set; }
-        
-        public Guid TaskListId { get; set; }
-        public TaskListEntity TaskList { get; set; } = null!;
+
+        //public Guid UserId { get; set; }
+        //public User User { get; set; }
 
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
@@ -22,6 +21,6 @@ namespace DataAccess.EntityModels
         public Guid PriorityId { get; set; }
         public PriorityEntity Priority { get; set; } = null!;
 
-        public List<TaskTagEntity>? TaskTags { get; set; }
+        public List<TagEntity>? Tags { get; set; }
     }
 }
