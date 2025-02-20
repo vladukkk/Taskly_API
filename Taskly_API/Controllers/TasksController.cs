@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Task;
+using BusinessLogic.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -35,8 +36,19 @@ namespace WebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _service.AddTask(task);
-            return Ok();
+            try
+            {
+                await _service.AddTask(task);
+                return Ok();
+            }
+            catch(TaskNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
         }
 
         [HttpPut("execute{id}")]
@@ -52,8 +64,19 @@ namespace WebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _service.UpdateTask(task);
-            return Ok();
+            try
+            {
+                await _service.UpdateTask(task);
+                return Ok();
+            }
+            catch (TaskNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]

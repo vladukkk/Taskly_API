@@ -1,7 +1,7 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Task;
+using BusinessLogic.Exceptions;
 using DataAccess.Contracts;
 using DataAccess.EntityModels;
 using System.Linq.Expressions;
@@ -12,14 +12,17 @@ namespace BusinessLogic.Services
     {
         private readonly IRepository<TaskEntity> _repository;
         private readonly IRepository<TagEntity> _tagRepository;
+        private readonly IRepository<PriorityEntity> _priorityRepository;
         private readonly IMapper _mapper;
 
         public TaskService(IRepository<TaskEntity> repository
             , IRepository<TagEntity> tagRepository
+            , IRepository<PriorityEntity> priorityRepository
             , IMapper mapper)
         {
             _repository = repository;
             _tagRepository = tagRepository;
+            _priorityRepository = priorityRepository;
             _mapper = mapper;
         }
 
@@ -54,13 +57,37 @@ namespace BusinessLogic.Services
             await _repository.SaveAsync();
         }
 
+        private async Task<(List<TagEntity>, PriorityEntity)> CheckExistingEntities(TaskAddDTO task)
+        {
+            var existingTags = await _tagRepository.Get(tag => task.TagIds.Contains(tag.Id));
+            if (existingTags == null || !existingTags.Any())
+                throw new TaskNotFoundException($"Tags with IDs {string.Join(", ", task.TagIds)} not found.");
+
+            var missingTags = task.TagIds.Except(existingTags.Select(t => t.Id)).ToList();
+
+            var existingPriority = await _priorityRepository.GetById(task.PriorityId);
+            if (existingPriority == null)
+                throw new TaskNotFoundException($"Priority with id {task.PriorityId} not found");
+
+            if (missingTags.Any())
+            {
+                throw new TaskNotFoundException($"Tags with IDs {string.Join(", ", missingTags)} not found.");
+            }
+
+            return (existingTags.ToList(), existingPriority);
+        }
+
         public async Task AddTask(TaskAddDTO task)
         {
             var taskEntity = _mapper.Map<TaskEntity>(task);
 
-            var existingTags = await _tagRepository.Get(tag => task.TagIds.Contains(tag.Id));
+            var(existingTags, existingPriority) = await CheckExistingEntities(task);
+
             taskEntity.Tags = _mapper.Map<List<TagEntity>>(existingTags);
+            taskEntity.Priority = existingPriority;
             taskEntity.IsCompleted = false;
+            taskEntity.CreatedAt = DateTime.Now;
+            taskEntity.UpdatedAt = DateTime.Now;
 
             await _repository.Add(taskEntity);
             await _repository.SaveAsync();
@@ -69,6 +96,12 @@ namespace BusinessLogic.Services
         public async Task UpdateTask(TaskUpdateDTO task)
         {
             var taskEntity = _mapper.Map<TaskEntity>(task);
+
+            var (existingTags, existingPriority) = await CheckExistingEntities(_mapper.Map<TaskAddDTO>(task));
+            taskEntity.Priority = existingPriority;
+            taskEntity.Tags = existingTags;
+            taskEntity.UpdatedAt = DateTime.Now;
+
             await _repository.Update(taskEntity);
             await _repository.SaveAsync();
         }

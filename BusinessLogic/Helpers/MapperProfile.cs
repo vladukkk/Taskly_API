@@ -14,6 +14,8 @@ namespace BusinessLogic.Helpers
             CreateMap<TaskEntity, TaskAddDTO>().ReverseMap();
             CreateMap<TaskEntity, TaskUpdateDTO>().ReverseMap();
 
+            CreateMap<TaskUpdateDTO, TaskAddDTO>().ReverseMap();
+
             CreateMap<PriorityEntity, PriorityDTO>().ReverseMap();
             CreateMap<PriorityEntity, PriorityAddDTO>().ReverseMap();
             CreateMap<PriorityEntity, PriorityUpdateDTO>().ReverseMap();
