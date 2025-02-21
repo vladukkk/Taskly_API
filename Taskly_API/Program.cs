@@ -32,7 +32,7 @@ namespace Taskly_API
             //repository
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             //services
-            builder.Services.AddScoped<UsersService>();
+            builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IPriorityService, PriorityService>();

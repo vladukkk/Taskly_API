@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.User;
 using DataAccess.EntityModels;
 using Microsoft.AspNetCore.Identity;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
-    public class UsersService
+    public class UsersService : IUsersService
     {
         private readonly UserManager<UserEntity> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -39,7 +40,7 @@ namespace BusinessLogic.Services
             var users = await _userManager.Users.ToListAsync();
             var userRoles = new List<UserRolesDTO>();
 
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 userRoles.Add(new UserRolesDTO
@@ -61,7 +62,7 @@ namespace BusinessLogic.Services
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user is null)
-                return IdentityResult.Failed(new IdentityError{Description = $"user with id: {userId} doesn't exist"});
+                return IdentityResult.Failed(new IdentityError { Description = $"user with id: {userId} doesn't exist" });
 
             var roleExists = await _roleManager.RoleExistsAsync(roleName);
             if (!roleExists)
