@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using DataAccess.Seed;
+using DataAccess.EntityModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Taskly_API
 {
@@ -30,6 +32,8 @@ namespace Taskly_API
             //repository
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             //services
+            builder.Services.AddScoped<UsersService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IPriorityService, PriorityService>();
             builder.Services.AddScoped<ITagService, TagService>();
@@ -37,6 +41,11 @@ namespace Taskly_API
             //validators
             builder.Services.AddFluentValidationAutoValidation()
                             .AddValidatorsFromAssemblyContaining<PriorityAddValidator>();
+
+            //identity
+            builder.Services.AddIdentity<UserEntity, IdentityRole>()
+                .AddEntityFrameworkStores<TaskDbContext>()
+                .AddDefaultTokenProviders();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

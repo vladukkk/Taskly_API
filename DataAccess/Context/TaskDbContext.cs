@@ -1,17 +1,23 @@
 ﻿using DataAccess.Configurations;
 using DataAccess.EntityModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Context
 {
-    public class TaskDbContext : DbContext
+    public class TaskDbContext : IdentityDbContext<UserEntity>
     {
+        private readonly IConfiguration _configuration;
+
         public DbSet<TaskEntity> Tasks { get; set; }
         public DbSet<TagEntity> Tags { get; set; }
         public DbSet<PriorityEntity> Priorities { get; set; }
 
-        public TaskDbContext(DbContextOptions<TaskDbContext> options) :base(options) { }
-        public TaskDbContext() { }
+        public TaskDbContext(DbContextOptions<TaskDbContext> options , IConfiguration configuration) :base(options) 
+        {
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,12 +26,6 @@ namespace DataAccess.Context
             modelBuilder.ApplyConfiguration(new PriorityConfiguration());
 
             base.OnModelCreating(modelBuilder);
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Test_db;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
         }
     }
 }

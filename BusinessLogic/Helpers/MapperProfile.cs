@@ -2,7 +2,10 @@
 using BusinessLogic.DTOs.Priority;
 using BusinessLogic.DTOs.Tag;
 using BusinessLogic.DTOs.Task;
+using BusinessLogic.DTOs.User;
+using BusinessLogic.DTOs.User.Auth;
 using DataAccess.EntityModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace BusinessLogic.Helpers
 {
@@ -10,6 +13,11 @@ namespace BusinessLogic.Helpers
     {
         public MapperProfile()
         {
+            CreateMap<UserEntity, LoginDTO>().ReverseMap();
+            CreateMap<UserEntity, RegisterDTO>().ReverseMap();
+
+            CreateMap<IdentityRole, RoleDTO>().ReverseMap();
+
             CreateMap<TaskEntity, TaskDTO>().ReverseMap();
             CreateMap<TaskEntity, TaskAddDTO>().ReverseMap();
             CreateMap<TaskEntity, TaskUpdateDTO>().ReverseMap();
