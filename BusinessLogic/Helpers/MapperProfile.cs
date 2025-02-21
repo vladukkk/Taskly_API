@@ -13,6 +13,7 @@ namespace BusinessLogic.Helpers
     {
         public MapperProfile()
         {
+            CreateMap<UserEntity, UserDTO>().ReverseMap();
             CreateMap<UserEntity, LoginDTO>().ReverseMap();
             CreateMap<UserEntity, RegisterDTO>().ReverseMap();
 

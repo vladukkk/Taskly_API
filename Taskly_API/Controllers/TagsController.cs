@@ -1,11 +1,13 @@
 ﻿using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Tag;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TagsController : ControllerBase
     {
         private readonly ITagService _tagService;

@@ -1,12 +1,15 @@
 ﻿using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Task;
 using BusinessLogic.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _service;
@@ -23,6 +26,17 @@ namespace WebAPI.Controllers
             return Ok(request);
         }
 
+        [HttpGet("user-tasks")]
+        public async Task<IActionResult> UserTasks()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId is null)
+                return Unauthorized(new { message = "User not authenticated" });
+
+            var request = await _service.GetUserTasks(userId);
+            return Ok(request);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -36,9 +50,13 @@ namespace WebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId is null)
+                return Unauthorized(new { message = "User not authenticated" });
+
             try
             {
-                await _service.AddTask(task);
+                await _service.AddTask(task, userId);
                 return Ok();
             }
             catch(TaskNotFoundException ex)

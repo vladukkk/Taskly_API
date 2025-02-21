@@ -29,6 +29,10 @@ namespace DataAccess.Configurations
             builder.Property(t => t.UpdatedAt)
                 .IsRequired();
 
+            builder.HasOne(t => t.User)
+                .WithMany(u => u.Tasks)
+                .HasForeignKey(t => t.UserId);
+
             builder.HasOne(t => t.Priority)
                 .WithMany(p => p.Tasks)
                 .HasForeignKey(t => t.PriorityId);

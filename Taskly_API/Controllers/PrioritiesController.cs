@@ -1,11 +1,13 @@
 ﻿using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Priority;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PrioritiesController : ControllerBase
     {
         private readonly IPriorityService _service;
