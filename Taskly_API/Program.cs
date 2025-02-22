@@ -48,6 +48,20 @@ namespace Taskly_API
                 .AddEntityFrameworkStores<TaskDbContext>()
                 .AddDefaultTokenProviders();
 
+            //cors
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:3000") // Адреса твого фронтенду
+                              .AllowAnyMethod()
+                              .AllowAnyHeader()
+                              .AllowCredentials();
+                    });
+            });
+
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -69,10 +83,12 @@ namespace Taskly_API
                 DbInitializer.Seed(context); // Заповнює базу
             }*/
 
+            app.UseCors("AllowFrontend");
+
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

@@ -18,20 +18,21 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Tags()
         {
             var request = await _tagService.GetTags();
             return Ok(request);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPriority(Guid id)
+        public async Task<IActionResult> TagById(Guid id)
         {
             var tag = await _tagService.GetById(id);
             return Ok(tag);
         }
 
         [HttpPost("add")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddTag([FromBody]TagAddDTO tag)
         {
             if (!ModelState.IsValid)
@@ -42,6 +43,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateTag([FromBody] TagUpdateDTO tag)
         {
             if (!ModelState.IsValid)
@@ -52,6 +54,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTag(Guid id)
         {
             await _tagService.DeleteTag(id);

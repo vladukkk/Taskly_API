@@ -20,7 +20,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Tasks()
         {
             var request = await _service.GetTasks();
             return Ok(request);

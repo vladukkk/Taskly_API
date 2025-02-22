@@ -32,6 +32,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> AddPriority([FromBody] PriorityAddDTO priority)
         {
             if (!ModelState.IsValid)
@@ -42,6 +43,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePriority([FromBody] PriorityUpdateDTO priority)
         {
             if (!ModelState.IsValid)
@@ -52,6 +54,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePriority(Guid id)
         {
             await _service.DeletePriority(id);
