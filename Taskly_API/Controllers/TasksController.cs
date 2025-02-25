@@ -35,6 +35,8 @@ namespace WebAPI.Controllers
                 return Unauthorized(new { message = "User not authenticated" });
 
             var request = await _service.GetUserTasks(userId);
+            Console.WriteLine(User.Identity.Name);
+
             return Ok(request);
         }
 

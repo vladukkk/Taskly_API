@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.User.Auth;
+using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -9,10 +10,13 @@ namespace WebAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly JwtService _jwtService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService
+            ,JwtService jwtService)
         {
             _authService = authService;
+            _jwtService = jwtService;
         }
 
         [HttpPost("register")]
@@ -29,8 +33,13 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Login([FromBody]LoginDTO model)
         {
             var result = await _authService.LoginAsync(model);
-            if(result.Succeeded)
-                return Ok(new {Message = "Login successfully"});
+            if (result.Succeeded)
+            {
+                var user = await _authService.GetUserByUserName(model.UserName);
+                var token = _jwtService.GeterateToken(user.Email, user.Id);
+
+                return Ok(new { Message = "Login successfully", Token = token });
+            }
 
             if (result.IsNotAllowed)
                 return BadRequest(new { Message = "Email is not confirmed" });

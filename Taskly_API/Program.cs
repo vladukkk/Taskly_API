@@ -10,7 +10,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using DataAccess.EntityModels;
 using Microsoft.AspNetCore.Identity;
-using DataAccess.Seed;
+using BusinessLogic;
 
 namespace Taskly_API
 {
@@ -38,28 +38,49 @@ namespace Taskly_API
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IPriorityService, PriorityService>();
             builder.Services.AddScoped<ITagService, TagService>();
+            builder.Services.AddScoped<JwtService>();
+
+            builder.Services.Configure<AuthSettings>(
+                builder.Configuration.GetSection("AuthSettings"));
 
             //validators
             builder.Services.AddFluentValidationAutoValidation()
                             .AddValidatorsFromAssemblyContaining<PriorityAddValidator>();
 
             //identity
-            builder.Services.AddIdentity<UserEntity, IdentityRole>()
+            /*builder.Services.AddIdentity<UserEntity, IdentityRole>()
                 .AddEntityFrameworkStores<TaskDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders();*/
 
+            builder.Services.AddIdentity<UserEntity, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = false;
+            })
+            .AddEntityFrameworkStores<TaskDbContext>()
+            .AddDefaultTokenProviders();
+
+
+            string allowPolicy = "AllowFrontend";
             //cors
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowFrontend",
-                    policy =>
-                    {
-                        policy.WithOrigins("http://localhost:3000") // Адреса твого фронтенду
-                              .AllowAnyMethod()
-                              .AllowAnyHeader()
-                              .AllowCredentials();
-                    });
+                options.AddPolicy(allowPolicy, policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173");
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowCredentials();
+                });
             });
+
+            builder.Services.AddAuth(builder.Configuration);
 
 
             builder.Services.AddControllers();
@@ -76,22 +97,20 @@ namespace Taskly_API
                 app.UseSwaggerUI();
             }
 
-           /* using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
-                context.Database.Migrate();  // Застосовує міграції
-                DbInitializer.Seed(context); // Заповнює базу
-            }*/
-
-            app.UseCors("AllowFrontend");
+            /* using (var scope = app.Services.CreateScope())
+             {
+                 var context = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
+                 context.Database.Migrate();  // Застосовує міграції
+                 DbInitializer.Seed(context); // Заповнює базу
+             }*/
+            app.UseCors(allowPolicy);
 
             app.UseHttpsRedirection();
+            app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
-
             app.Run();
         }
     }
