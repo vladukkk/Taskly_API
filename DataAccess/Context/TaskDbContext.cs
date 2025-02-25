@@ -13,6 +13,7 @@ namespace DataAccess.Context
         public DbSet<TaskEntity> Tasks { get; set; }
         public DbSet<TagEntity> Tags { get; set; }
         public DbSet<PriorityEntity> Priorities { get; set; }
+        public DbSet<QuoteEntity> Quotes { get; set; }
 
         public TaskDbContext(DbContextOptions<TaskDbContext> options , IConfiguration configuration) :base(options) 
         {
@@ -24,6 +25,7 @@ namespace DataAccess.Context
             modelBuilder.ApplyConfiguration(new TaskConfiguration());
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new PriorityConfiguration());
+            modelBuilder.ApplyConfiguration(new QuotesConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

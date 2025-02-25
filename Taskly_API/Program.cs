@@ -38,6 +38,7 @@ namespace Taskly_API
             builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IPriorityService, PriorityService>();
             builder.Services.AddScoped<ITagService, TagService>();
+            builder.Services.AddScoped<IQuotesService, QuotesService>();
             builder.Services.AddScoped<JwtService>();
 
             builder.Services.Configure<AuthSettings>(

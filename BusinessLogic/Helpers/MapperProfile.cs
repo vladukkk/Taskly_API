@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.Priority;
+using BusinessLogic.DTOs.Quotes;
 using BusinessLogic.DTOs.Tag;
 using BusinessLogic.DTOs.Task;
 using BusinessLogic.DTOs.User;
@@ -32,6 +33,9 @@ namespace BusinessLogic.Helpers
             CreateMap<TagEntity, TagDTO>().ReverseMap();
             CreateMap<TagEntity, TagAddDTO>().ReverseMap();
             CreateMap<TagEntity, TagUpdateDTO>().ReverseMap();
+
+            CreateMap<QuoteEntity, QuoteDTO>().ReverseMap();
+            CreateMap<QuoteEntity, QuoteAddDTO>().ReverseMap();
         }
     }
 }
