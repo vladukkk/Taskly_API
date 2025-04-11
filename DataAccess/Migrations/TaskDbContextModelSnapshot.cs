@@ -43,7 +43,7 @@ namespace DataAccess.Migrations
                     b.ToTable("Priorities");
                 });
 
-            modelBuilder.Entity("DataAccess.EntityModels.QuotesEntity", b =>
+            modelBuilder.Entity("DataAccess.EntityModels.QuoteEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,15 @@ namespace DataAccess.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("isGlobal")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tags");
                 });
@@ -339,6 +347,16 @@ namespace DataAccess.Migrations
                     b.ToTable("TaskTags", (string)null);
                 });
 
+            modelBuilder.Entity("DataAccess.EntityModels.TagEntity", b =>
+                {
+                    b.HasOne("DataAccess.EntityModels.UserEntity", "User")
+                        .WithMany("Tags")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DataAccess.EntityModels.TaskEntity", b =>
                 {
                     b.HasOne("DataAccess.EntityModels.PriorityEntity", "Priority")
@@ -431,6 +449,8 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.EntityModels.UserEntity", b =>
                 {
+                    b.Navigation("Tags");
+
                     b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618

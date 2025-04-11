@@ -18,6 +18,11 @@ namespace DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(7);
 
+            builder.HasOne(t => t.User)
+                .WithMany(u => u.Tags)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(t => t.Tasks)
                 .WithMany(task => task.Tags)
                 .UsingEntity(j => j

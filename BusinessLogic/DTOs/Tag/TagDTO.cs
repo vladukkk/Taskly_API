@@ -1,5 +1,4 @@
-﻿
-using BusinessLogic.Contracts;
+﻿using BusinessLogic.Contracts;
 
 namespace BusinessLogic.DTOs.Tag
 {
@@ -7,6 +6,7 @@ namespace BusinessLogic.DTOs.Tag
     { 
         public Guid Id { get; set; }
 
+        public bool IsGlobal { get; set; }
         public string Title { get; set; } = null!;
         public string ColorHash { get; set; } = null!;
     }

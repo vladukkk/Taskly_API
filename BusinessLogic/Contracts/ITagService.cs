@@ -5,8 +5,10 @@ namespace BusinessLogic.Contracts
     public interface ITagService
     {
         Task<List<TagDTO>?> GetTags();
+        Task<List<TagDTO>?> GetTags(string userId);
         Task<TagDTO?> GetById(Guid id);
-        Task AddTag(TagAddDTO tag);
+        Task AddGlobalTag(TagAddDTO tag);
+        Task AddPersonalityTag(TagAddDTO tag, string userId);
         Task UpdateTag(TagUpdateDTO tag);
         Task DeleteTag(Guid Id);
     }

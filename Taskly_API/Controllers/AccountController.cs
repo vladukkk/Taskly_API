@@ -27,9 +27,20 @@ namespace WebAPI.Controllers
             var user = await _accountService.GetCurrentUser(userId);
 
             if (user == null)
-                return NotFound(new { Message = "User not found" });
+                return Forbid();
 
             return Ok(user);
+        }
+
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetUserStats()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized(new { message = "User not authenticated" });
+
+            var response = await _accountService.GetUserStats(userId);
+            return Ok(response);
         }
     }
 }

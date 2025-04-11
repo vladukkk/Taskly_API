@@ -28,7 +28,6 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Roles()
         {
             var roles = await _usersService.GetRoles();
-
             return Ok(roles);
         }
 

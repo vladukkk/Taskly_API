@@ -1,5 +1,4 @@
 ﻿using BusinessLogic.Contracts;
-using BusinessLogic.DTOs.Priority;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,36 +28,6 @@ namespace WebAPI.Controllers
         {
             var priority = await _service.GetById(id);
             return Ok(priority);
-        }
-
-        [HttpPost("add")]
-        [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> AddPriority([FromBody] PriorityAddDTO priority)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _service.AddPriority(priority);
-            return Ok();
-        }
-
-        [HttpPut("update")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdatePriority([FromBody] PriorityUpdateDTO priority)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _service.UpdatePriority(priority);
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeletePriority(Guid id)
-        {
-            await _service.DeletePriority(id);
-            return NoContent();
         }
     }
 }

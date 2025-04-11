@@ -13,6 +13,10 @@ namespace DataAccess.Configurations
             builder.HasMany(u => u.Tasks)
                 .WithOne(t => t.User)
                 .HasForeignKey(t => t.UserId);
+
+            builder.HasMany(u => u.Tags)
+                .WithOne(t => t.User)
+                .HasForeignKey(t => t.UserId);
         }
     }
 }

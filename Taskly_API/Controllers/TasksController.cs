@@ -19,14 +19,6 @@ namespace WebAPI.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Tasks()
-        {
-            var request = await _service.GetTasks();
-            return Ok(request);
-        }
-
         [HttpGet("user-tasks")]
         public async Task<IActionResult> UserTasks()
         {

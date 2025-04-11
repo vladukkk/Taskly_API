@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    [Migration("20250221145838_Init2")]
+    [Migration("20250302164106_Init2")]
     partial class Init2
     {
         /// <inheritdoc />
@@ -46,6 +46,25 @@ namespace DataAccess.Migrations
                     b.ToTable("Priorities");
                 });
 
+            modelBuilder.Entity("DataAccess.EntityModels.QuoteEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Quotes");
+                });
+
             modelBuilder.Entity("DataAccess.EntityModels.TagEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -62,7 +81,15 @@ namespace DataAccess.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("isGlobal")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tags");
                 });
@@ -97,14 +124,15 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserEntityId")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PriorityId");
 
-                    b.HasIndex("UserEntityId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tasks");
                 });
@@ -322,6 +350,16 @@ namespace DataAccess.Migrations
                     b.ToTable("TaskTags", (string)null);
                 });
 
+            modelBuilder.Entity("DataAccess.EntityModels.TagEntity", b =>
+                {
+                    b.HasOne("DataAccess.EntityModels.UserEntity", "User")
+                        .WithMany("Tags")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DataAccess.EntityModels.TaskEntity", b =>
                 {
                     b.HasOne("DataAccess.EntityModels.PriorityEntity", "Priority")
@@ -330,11 +368,15 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.EntityModels.UserEntity", null)
+                    b.HasOne("DataAccess.EntityModels.UserEntity", "User")
                         .WithMany("Tasks")
-                        .HasForeignKey("UserEntityId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Priority");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -410,6 +452,8 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.EntityModels.UserEntity", b =>
                 {
+                    b.Navigation("Tags");
+
                     b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618

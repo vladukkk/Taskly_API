@@ -2,6 +2,7 @@
 using BusinessLogic.DTOs.Tag;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
@@ -20,7 +21,11 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Tags()
         {
-            var request = await _tagService.GetTags();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId is null)
+                return Unauthorized(new { message = "User not authenticated" });
+
+            var request = await _tagService.GetTags(userId);
             return Ok(request);
         }
 
@@ -31,34 +36,18 @@ namespace WebAPI.Controllers
             return Ok(tag);
         }
 
-        [HttpPost("add")]
-        [Authorize(Roles = "Admin")]
+        [HttpPost("add-personality")]
         public async Task<IActionResult> AddTag([FromBody]TagAddDTO tag)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _tagService.AddTag(tag);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId is null)
+                return Unauthorized(new { message = "User not authenticated" });
+
+            await _tagService.AddPersonalityTag(tag, userId);
             return Ok();
-        }
-
-        [HttpPut("update")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateTag([FromBody] TagUpdateDTO tag)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _tagService.UpdateTag(tag);
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteTag(Guid id)
-        {
-            await _tagService.DeleteTag(id);
-            return NoContent();
         }
     }
 }

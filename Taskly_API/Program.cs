@@ -1,16 +1,9 @@
-using BusinessLogic.Contracts;
 using BusinessLogic.Helpers;
-using BusinessLogic.Services;
-using BusinessLogic.Validators.Priority;
 using DataAccess.Context;
-using DataAccess.Contracts;
-using DataAccess.Repository;
-using Microsoft.EntityFrameworkCore;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using DataAccess.EntityModels;
 using Microsoft.AspNetCore.Identity;
 using BusinessLogic;
+using DataAccess;
 
 namespace Taskly_API
 {
@@ -23,35 +16,13 @@ namespace Taskly_API
             //add AutoMapper
             builder.Services.AddAutoMapper(typeof(MapperProfile));
 
-            //config context
-            builder.Services.AddDbContext<TaskDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("testConn"));
-            });
+            builder.Services
+                .AddInfrastructure(builder.Configuration)
+                .AddBusinessLogic();
 
-            //repository
-            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            //services
-            builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddScoped<IUsersService, UsersService>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<ITaskService, TaskService>();
-            builder.Services.AddScoped<IPriorityService, PriorityService>();
-            builder.Services.AddScoped<ITagService, TagService>();
-            builder.Services.AddScoped<IQuotesService, QuotesService>();
-            builder.Services.AddScoped<JwtService>();
 
             builder.Services.Configure<AuthSettings>(
                 builder.Configuration.GetSection("AuthSettings"));
-
-            //validators
-            builder.Services.AddFluentValidationAutoValidation()
-                            .AddValidatorsFromAssemblyContaining<PriorityAddValidator>();
-
-            //identity
-            /*builder.Services.AddIdentity<UserEntity, IdentityRole>()
-                .AddEntityFrameworkStores<TaskDbContext>()
-                .AddDefaultTokenProviders();*/
 
             builder.Services.AddIdentity<UserEntity, IdentityRole>(options =>
             {

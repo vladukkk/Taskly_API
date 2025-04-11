@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessLogic.Contracts;
 using BusinessLogic.DTOs.Quotes;
 using DataAccess.Contracts;

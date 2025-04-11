@@ -24,15 +24,33 @@ namespace BusinessLogic.Services
             return _mapper.Map<List<TagDTO>>(result);
         }
 
+        public async Task<List<TagDTO>?> GetTags(string userId)
+        {
+            var result = await _tagRepository.Get(
+                filter: t => t.isGlobal || t.UserId == userId
+                );
+            return _mapper.Map<List<TagDTO>>(result);
+        }
+
         public async Task<TagDTO?> GetById(Guid id)
         {
             var tag = await _tagRepository.GetById(id);
             return _mapper.Map<TagDTO>(tag);
         }
 
-        public async Task AddTag(TagAddDTO tag)
+        public async Task AddGlobalTag(TagAddDTO tag)
         {
             var tagEntity = _mapper.Map<TagEntity>(tag);
+            tagEntity.isGlobal = true;
+            await _tagRepository.Add(tagEntity);
+            await _tagRepository.SaveAsync();
+        }
+
+        public async Task AddPersonalityTag(TagAddDTO tag, string userId)
+        {
+            var tagEntity = _mapper.Map<TagEntity>(tag);
+            tagEntity.isGlobal = false;
+            tagEntity.UserId = userId;
             await _tagRepository.Add(tagEntity);
             await _tagRepository.SaveAsync();
         }
